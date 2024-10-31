@@ -1,13 +1,15 @@
 import express from 'express';
-import { getResources, createResource } from '../controllers/resourceController.js';
-import authMiddleware from '../middleware/authMiddleware.js';
-
 const router = express.Router();
 
-// Ruta para obtener todos los recursos educativos (requiere autenticación)
-router.get('/', authMiddleware, getResources);
+// Ruta para acceder a recursos (con restricciones según el rol)
+router.get('/', (req, res) => {
+    const hasPermission = req.user && req.user.role !== 'admin';  // Asumiendo que los recursos están restringidos para 'admin'
 
-// Ruta para crear un nuevo recurso educativo (requiere autenticación)
-router.post('/', authMiddleware, createResource);
+    if (hasPermission) {
+        res.status(200).json({ message: 'Acceso a los recursos permitido' });
+    } else {
+        res.status(403).json({ error: 'No tienes permiso para acceder a estos recursos' });
+    }
+});
 
 export default router;

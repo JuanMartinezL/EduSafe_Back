@@ -5,6 +5,8 @@ import reportRoutes from './routes/reportRoutes.js';
 import resourceRoutes from './routes/resourceRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import authMiddleware from './middleware/authMiddleware.js';
+
 
 dotenv.config();
 
@@ -16,8 +18,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/reports', reportRoutes);
+//app.use('/api/reports', reportRoutes);
 app.use('/api/resources', resourceRoutes);
+//app.use('/api/reports', authMiddleware, reportRoutes);
+app.use('/api/resources', authMiddleware, resourceRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 
