@@ -5,14 +5,17 @@ import Role from '../models/Role.js';
 // Middleware para verificar el token de autenticación
 const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization');
-  if (!token) return res.status(401).json({ message: 'No hay token, autorización denegada❌' });
+  if (!token) {
+    return res.status(401).json({ message: 'No hay token, autorización denegada ❌' });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'El token no es válido😒' });
+    console.error('Error en la verificación del token:', error);
+    res.status(401).json({ message: 'El token no es válido' });
   }
 };
 
@@ -20,8 +23,8 @@ const authMiddleware = (req, res, next) => {
 export const authorize = (requiredPermission) => async (req, res, next) => {
   try {
     // Buscar el usuario con el rol y sus permisos
-    const user = await User.findById(req.user.id).populate('roleId');
-    const userRole = await Role.findById(user.roleId);
+    const user = await User.findById(req.user.id).populate('role');
+    const userRole = await Role.findById(user.role);
 
     if (userRole.permissions.includes(requiredPermission)) {
       next();  // Tiene permiso, continúa
@@ -33,6 +36,5 @@ export const authorize = (requiredPermission) => async (req, res, next) => {
     res.status(500).json({ message: 'Error de autorización' });
   }
 };
-
 
 export default authMiddleware;
