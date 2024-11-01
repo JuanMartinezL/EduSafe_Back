@@ -14,6 +14,9 @@ const resourceSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  filePath: {
+    type: String,
+  }
 });
 
 export default mongoose.model('Resource', resourceSchema);

@@ -14,6 +14,7 @@ export const getResources = async (req, res) => {
 // Crear recurso educativo
 export const createResource = async (req, res) => {
   const { title, description } = req.body;
+  const file = req.file;
 
   try {
     if (!title || !description) {
@@ -24,6 +25,7 @@ export const createResource = async (req, res) => {
       title,
       description,
       user_id: req.user.id,
+      filePath: file ? file.path : null,
     });
 
     await resource.save();
