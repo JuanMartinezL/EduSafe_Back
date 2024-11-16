@@ -15,11 +15,11 @@ const roles = [
   },
   { 
     roleName: 'Profesor', 
-    permissions: ["view_reports", "access_resources"]
+    permissions: ["view_reports", "access_resources",  "create_report", "create_resource"]
   },
   { 
     roleName: 'Administrador', 
-    permissions: ["manage_users", "view_reports", "access_resources", "create_report"]
+    permissions: ["manage_users", "view_reports", "access_resources", "create_report", "create_resource"]
   }
 ];
 

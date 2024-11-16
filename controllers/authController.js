@@ -58,6 +58,11 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Credenciales inválidas' });
     }
 
+    // Verifica que el rol exista antes de acceder a 'roleName'
+    if (!user.role) {
+      return res.status(400).json({ message: 'El usuario no tiene un rol asignado' });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Credenciales inválidas' });
@@ -66,13 +71,24 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role.roleName },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '2h' }
     );
 
-    res.status(200).json({ message: `inicio de sesión exitoso Bievenido ${user.name}! `,  token });
+    res.status(200).json({ 
+      message: `Inicio de sesión exitoso. Bienvenido ${user.name}!`,
+      token, 
+      user: {
+        id: user._id,
+        name: user.name,
+        last_name: user.last_name,
+        email: user.email,
+        image: user.image,
+        role: user.role.roleName 
+      }
+    });
   } catch (error) {
-    console.error('Error en el inicio de sesión', error)
+    console.error('Error en el inicio de sesión', error);
     res.status(500).json({ error: error.message });
   }
-
 };
+
